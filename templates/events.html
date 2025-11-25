@@ -17,22 +17,55 @@
       data.forEach((element) => {
         const evenContainer = document.createElement("div");
         evenContainer.classList.add(
-          "bg-blue-200",
+          "bg-white",
           "border",
-          "border-red-400",
-          "p-2",
+          "border-gray-200",
+          "rounded-md",
+          "text-sm",
+          "p-4",
           "space-y-2",
-          "w-fit"
+          "w-fit",
+          "relative",
+          "shadow-sm"
         );
+        const buyEle = document.createElement("button");
+        const addCartEle = document.createElement("button");
+        buyEle.innerText = "Buy Ticket";
+        addCartEle.innerText = "Add to Cart";
+        buyEle.className =
+          "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+        addCartEle.className =
+          "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+        // buyEle.addEventListener("click", async () => {
+        //   const res = await fetch(`/api/buy_ticket/${element.id}`, {
+        //     headers: {
+        //       method: "POST",
+        //       contentType: "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       user_id: "",
+        //       ticket: 0,
+        //     }),
+        //   });
+        //   if (res.ok) {
+        //     alert("Ticket bought successfully");
+        //   }
+        // });
+
         Object.entries(element).forEach(([key, value]) => {
           const childs = document.createElement("p");
+
           childs.className = "text-white-200 ";
-          childs.textContent = `${key
-            .split("_")
-            .map((ite) => ite.charAt(0).toUpperCase() + ite.slice(1))
-            .join(" ")} : ${value}`;
-          evenContainer.appendChild(childs);
+          if (!["created_at", "id"].includes(key)) {
+            childs.textContent = `${key
+              .split("_")
+              .map((ite) => ite.charAt(0).toUpperCase() + ite.slice(1))
+              .join(" ")} : ${value}`;
+            evenContainer.appendChild(childs);
+          }
         });
+        evenContainer.append(buyEle);
+        evenContainer.append(addCartEle);
         if (events_container) {
           events_container.append(evenContainer);
         }

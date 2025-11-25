@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between w-full">
     <h1 class="text-xl font-semibold">Events List</h1>
     <a
-    href="/admin/events-create"
+      href="/admin/events-create"
       class="border rounded-lg border-blue-500 hover:bg-blue-100 font-semibold text-blue-500 py-2 px-4"
     >
       Add New Event
@@ -24,6 +24,14 @@
 
       data.forEach((element) => {
         const evenContainer = document.createElement("div");
+
+        if (element.avaiable_tickets === 0) {
+          const soldoutEle = document.createElement("span");
+          soldoutEle.innerText = "SOLD OUT";
+          soldoutEle.className =
+            "bg-green-200 absolute top-0 right-0 p-2 shadow border border-green-200 font-semibold";
+          evenContainer.append(soldoutEle);
+        }
         evenContainer.classList.add(
           "bg-white",
           "border",
@@ -33,6 +41,7 @@
           "p-4",
           "space-y-2",
           "w-fit",
+          "relative",
           "shadow-sm"
         );
         Object.entries(element).forEach(([key, value]) => {
