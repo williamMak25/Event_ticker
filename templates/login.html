@@ -1,0 +1,132 @@
+{% extends "layout.html" %} {% from "components/input.html" import Input %} {%
+block title %}Login{% endblock %} {% block content %}
+<div class="flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="p-8">
+      <!-- Header -->
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h2>
+        <p class="text-slate-600">Please sign in to your account</p>
+      </div>
+
+      <form id="loginForm" class="space-y-6" method="post">
+        <!-- Email Input -->
+        {% from "components/input.html" import Input %} {{ Input( name="email",
+        label="Email Address", type="email", placeholder="you@example.com",
+        icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 12H8m0 0l-4 4m4-4l-4-4"
+          /></svg
+        >', required=true ) }}
+
+        <!-- Password Input -->
+        {{ Input( name="password", label="Password", type="password",
+        placeholder="••••••••", icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+          /></svg
+        >', required=true ) }}
+
+        <!-- <div class="flex justify-end mt-1"> -->
+        <button
+          type="button"
+          class="text-xs font-medium text-indigo-600 hover:text-indigo-500"
+        >
+          Forgot password?
+        </button>
+        <!-- </div> -->
+        <!-- </div> -->
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition"
+          id="loginButton"
+        >
+          Sign In
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="inline ml-2 h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-8 py-4 bg-slate-50 border-t border-slate-100 text-center">
+      <p class="text-sm text-slate-600">
+        Don't have an account?
+        <a
+          href="{{ url_for('pages.register') }}"
+          class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+        >
+          Create account
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Optional JS to submit via fetch to API -->
+<script>
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        email: form.email.value,
+        password: form.password.value,
+      };
+
+      const btn = document.getElementById("loginButton");
+      btn.disabled = true;
+      btn.textContent = "Signing In...";
+
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        alert("Login successful!");
+        window.location.href = "/"; // redirect after success
+      } else {
+        const result = await res.json().catch(() => null);
+        alert(result?.message || "Invalid credentials");
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Sign In";
+    });
+</script>
+{% endblock %}

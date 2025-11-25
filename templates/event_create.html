@@ -1,0 +1,132 @@
+{% extends "layout.html" %} {% from "components/input.html" import Input %} {%
+block content %}
+<div class="p-8 flex flex-col">
+  <div class="flex items-center justify-between w-full">
+    <a href="/admin/events">Back</a>
+    <h1 class="text-lg font-semibold">Create Events</h1>
+  </div>
+
+  <form class="space-y-4" id="event_create" method="post">
+    {{ Input( name="name", label="Name", type="text", placeholder="••••••••",
+    icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }} {{ Input( name="date", label="Date", type="date",
+    placeholder="••••••••", icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }} {{ Input( name="time", label="Time", type="time",
+    placeholder="••••••••", icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }} {{ Input( name="location", label="Location",
+    type="text", placeholder="••••••••", icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }} {{ Input( name="avaiable_tickets", label="Avaiable
+    tickets", type="number", placeholder="••••••••", icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }} {{ Input( name="ticket_price", label="Ticket Price (
+    $ US Dollar )", type="number", placeholder="••••••••", icon='<svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+      /></svg
+    >', required=true ) }}
+
+    <button type="submit">Create Event</button>
+  </form>
+</div>
+
+<script>
+  <div>
+    <a href="/admin/events">Back</a>
+  </div>;
+  document
+    .getElementById("event_create")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+
+      const data = {
+        name: form.name.value,
+        date_time: form.date.value + "T" + form.time.value + ":00Z",
+        location: form.location.value,
+        avaiable_tickets: form.avaiable_tickets.value,
+        ticket_price: form.ticket_price.value,
+      };
+
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        window.location.href = "/admin/events";
+        alert("event created.");
+      }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layout.html" %} {% block content %}
+<div class="p-8 space-y-4">
+  <h1 class="text-xl font-semibold">Events List</h1>
+  <div id="events_container" class="gap-4 grid grid-cols-3"></div>
+</div>
+<script>
+  let isLoading = false;
+  window.addEventListener("load", async () => {
+    isLoading = true;
+    const res = await fetch("/api/events");
+
+    if (res.ok) {
+      const data = await res.json();
+      isLoading = false;
+      const events_container = document.getElementById("events_container");
+
+      data.forEach((element) => {
+        const evenContainer = document.createElement("div");
+        evenContainer.classList.add(
+          "bg-blue-200",
+          "border",
+          "border-red-400",
+          "p-2",
+          "space-y-2",
+          "w-fit"
+        );
+        Object.entries(element).forEach(([key, value]) => {
+          const childs = document.createElement("p");
+          childs.className = "text-white-200 ";
+          childs.textContent = `${key
+            .split("_")
+            .map((ite) => ite.charAt(0).toUpperCase() + ite.slice(1))
+            .join(" ")} : ${value}`;
+          evenContainer.appendChild(childs);
+        });
+        if (events_container) {
+          events_container.append(evenContainer);
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

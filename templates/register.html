@@ -1,0 +1,139 @@
+{% extends "layout.html" %} {% from "components/input.html" import Input %} {%
+block title %}Login{% endblock %} {% block content %}
+
+<div class="flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="p-8">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
+        <p className="text-slate-600">Join us and get started today</p>
+      </div>
+
+      <form class="space-y-5" id="register_user" method="post">
+        {{ Input( name="name", label="Full Name", type="text", placeholder="John
+        Doe", icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5.121 17.804A7 7 0 1116.878 6.196 7 7 0 015.121 17.804z"
+          /></svg
+        >', required=true ) }} {{ Input( name="email", label="Email Address",
+        type="email", placeholder="you@example.com", icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 12H8m0 0l-4 4m4-4l-4-4"
+          /></svg
+        >', required=true ) }} {{ Input( name="password", label="Password",
+        type="password", placeholder="Create a password", icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+          /></svg
+        >', required=true ) }} {{ Input( name="confirm_password", label="Confirm
+        Password", type="password", placeholder="Confirm your password",
+        icon='<svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0v7a2 2 0 002 2h8a2 2 0 002-2v-7"
+          /></svg
+        >', required=true ) }}
+
+        <button
+          type="submit"
+          class="w-full mt-2 bg-indigo-600 text-white py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition"
+        >
+          Create Account
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="px-8 py-4 bg-slate-50 border-t border-slate-100 text-center">
+      <p class="text-sm text-slate-600">
+        Already have an account?
+        <a
+          href="{{ url_for('pages.register') }}"
+          class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+        >
+          Sign in
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById("register_user");
+
+  form.addEventListener("submit", async (e) => {
+    const data = e.target;
+
+    const formdata = {
+      name: data.name.value,
+      email: data.email.value,
+      password: data.password.value,
+    };
+
+    const res = await fetch("/api/users", {
+      headers: {
+        method: "POST",
+        contentType: "application/json",
+        body: JSON.stringify(formdata),
+      },
+    });
+    const message = document.getElementById("message");
+
+    if (!res.ok) {
+      message.classList.add("text-red-500");
+      message.innerText = "Something went wrong";
+    } else {
+      alert("Account created successfully");
+      window.location.href = "/login";
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "layout.html" %} {% block title %}Home - MySite{% endblock %} {%block
+content %}
+
+<div class="p-4 f flex items-center flex-col justify-center w-full h-full">
+  <h1 class="text-3xl text-red-500 font-bold">
+    {% if user_id %} Welcome from Jyinn Ticket Center {% else %} Login or
+    Register First {%endif%}
+  </h1>
+</div>
+{% endblock %}
