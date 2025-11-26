@@ -1,0 +1,82 @@
+{% extends "layout.html" %} {% from "components/input.html" import Input %} {%
+block content %}
+<div class="p-8 flex flex-col">
+  <div class="flex items-center justify-between w-full pb-4">
+    <!-- <a
+      href="/admin/users"
+      class="hover:underline text-violet-400 font-semibold text-sm"
+      >&lt; Go Back</a
+    > -->
+    <h1 class="text-lg font-semibold">Manage Users</h1>
+  </div>
+  <table id="users_container">
+    <thead>
+      <tr>
+        <th class="border text-start px-4 py-2">Email</th>
+        <th class="border px-4 py-2 text-start">ID</th>
+        <th class="border px-4 py-2 text-start">Name</th>
+        <th class="border px-4 py-2">Action</th>
+      </tr>
+    </thead>
+    <tbody id="users_body"></tbody>
+  </table>
+</div>
+<script>
+  const loggedInUserId = "{{ user_id }}";
+  window.addEventListener("load", async () => {
+    const response = await fetch("/api/users");
+    const users = await response.json();
+
+    const usersBodyEle = document.getElementById("users_body");
+
+    users
+      .filter((ite) => ite.id !== loggedInUserId)
+      .forEach((element) => {
+        const userRow = document.createElement("tr");
+
+        Object.entries(element).forEach(([key, value]) => {
+          if (key !== "created_at") {
+            const userData = document.createElement("td");
+            userData.classList.add("border", "px-4", "py-2");
+            userData.textContent = value;
+            userRow.appendChild(userData);
+          }
+        });
+        const actionTd = document.createElement("td");
+        actionTd.classList.add("border", "px-4", "py-2");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add(
+          "bg-red-600",
+          "hover:bg-red-700",
+          "text-white",
+          "font-bold",
+          "py-1",
+          "px-2",
+          "rounded",
+          "text-center",
+          "w-full"
+        );
+        usersBodyEle.appendChild(userRow);
+        userRow.appendChild(actionTd);
+        actionTd.appendChild(deleteBtn);
+        deleteBtn.textContent = "Delete";
+
+        deleteBtn.addEventListener("click", async () => {
+          const res = await fetch(`/api/users/${element.id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.ok) {
+            alert("User deleted successfully");
+            userRow.remove();
+          } else {
+            alert("Error deleting user");
+          }
+        });
+      });
+  });
+</script>
+{% endblock %}

@@ -21,7 +21,7 @@ class Wallet(db.Model):
             "user_id": str(self.user_id),
             "balance": float(self.balance),
             "transtions": [transtion.to_dict() for transtion in self.transtions],
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
         }
     
 class Transtions(db.Model):
@@ -45,5 +45,5 @@ class Transtions(db.Model):
             "wallet_id": str(self.wallet_id),
             "amount": float(self.amount),
             "type": str(self.type),
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
         }

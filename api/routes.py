@@ -13,13 +13,15 @@ api = Blueprint('api',__name__,url_prefix='/api')
 def index():
     return "Hello, World!"
 
-@api.route('/users',methods=['POST','GET'])
+@api.route('/users',methods=['POST','GET','DELETE'])
 def create_user():
     if request.method == 'GET':
         users = User.query.all()
         return jsonify([user.to_dict() for user in users])
     
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
     user = User.query.filter_by(email=data['email']).first()
 
     if user:
@@ -42,6 +44,22 @@ def create_user():
     db.session.add(wallet)
     db.session.commit()
     return jsonify(user.to_dict())
+
+@api.route('/users/<user_id>',methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"message":"User not found"}),404
+    
+    wallet = Wallet.query.filter_by(user_id=user.id).first()
+    if not wallet:
+        return jsonify({"message":"Wallet not found"}),404
+    
+    db.session.delete(wallet)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message":"User deleted successfully"}),200
 
 @api.route('/login',methods=['POST'])
 def login_user():
@@ -124,6 +142,11 @@ def get_user_ticket():
         return jsonify([]),200
     return jsonify([ticket.to_dict() for ticket in tickets])
 
+@api.route('/wallet',methods=['GET'])
+def wallet_list():
+    wallets = Wallet.query.all()
+    return jsonify([wallet.to_dict() for wallet in wallets])
+
 @api.route('/get_user_wallet/<user_id>',methods=['GET'])
 def get_wallet(user_id:str):
     wallet = Wallet.query.filter_by(user_id = user_id).first()
@@ -146,3 +169,8 @@ def top_up():
     db.session.add(transition)
     db.session.commit()
     return jsonify(wallet.to_dict())
+
+@api.route('/transactions',methods=['GET'])
+def get_transactions():
+    transitions = Transtions.query.all()
+    return jsonify([transition.to_dict() for transition in transitions])

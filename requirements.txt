@@ -1,0 +1,7 @@
+bcrypt
+flask_sqlalchemy
+flask_session
+python-dotenv
+flask
+redis
+psycopg2

@@ -1,0 +1,103 @@
+{% extends "layout.html" %} {% block content %}
+<div class="p-8 flex flex-col">
+  <div class="flex items-center justify-between w-full pb-4">
+    <h1 class="text-lg font-semibold">Payment Management</h1>
+    <div class="flex">
+      {% for payment in
+      [{"name":"Wallets","key":"wallets"},{"name":"Transitions","key":"transitions"}]
+      %}
+      <a
+        href="/admin/payments?path={{ payment.key }}"
+        class="px-4 py-2 transition {{ 'bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50' if path == payment.key else 'text-gray-400' }}"
+      >
+        {{ payment.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% if path == 'wallets' %}
+  <div class="mt-4">
+    <h2 class="text-md font-semibold mb-2">Wallets Overview</h2>
+    <!-- Wallets content goes here -->
+    <table id="wallets_container">
+      <thead>
+        <tr>
+          <th class="border text-start px-4 py-2">Balance</th>
+          <th class="border px-4 py-2 text-start">ID</th>
+          <th class="border px-4 py-2 text-start">Name</th>
+          <th class="border px-4 py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody id="wallets_body"></tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="mt-4">
+    <h2 class="text-md font-semibold mb-2">Transitions Overview</h2>
+    <!-- Transitions content goes here -->
+    <p>List of transitions will be displayed here.</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  window.addEventListener("load", async () => {
+    if ("{{ path }}" === "wallets") {
+      const response = await fetch("/api/wallet");
+      const wallets = await response.json();
+      const walletBodyEle = document.getElementById("wallets_body");
+
+      wallets.forEach((element) => {
+        const userRow = document.createElement("tr");
+
+        Object.entries(element).forEach(([key, value]) => {
+          if (key !== "created_at") {
+            const userData = document.createElement("td");
+            userData.classList.add("border", "px-4", "py-2");
+            userData.textContent = value;
+            userRow.appendChild(userData);
+          }
+        });
+        const actionTd = document.createElement("td");
+        actionTd.classList.add("border", "px-4", "py-2");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add(
+          "bg-red-600",
+          "hover:bg-red-700",
+          "text-white",
+          "font-bold",
+          "py-1",
+          "px-2",
+          "rounded",
+          "text-center",
+          "w-full"
+        );
+        walletBodyEle.appendChild(userRow);
+        userRow.appendChild(actionTd);
+        actionTd.appendChild(deleteBtn);
+        deleteBtn.textContent = "Delete";
+
+        deleteBtn.addEventListener("click", async () => {
+          const res = await fetch(`/api/users/${element.id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.ok) {
+            alert("User deleted successfully");
+            userRow.remove();
+          } else {
+            alert("Error deleting user");
+          }
+        });
+      });
+    } else {
+      const response = await fetch("/api/wallet");
+      const users = await response.json();
+      console.log(users);
+    }
+  });
+</script>
+{% endblock %}

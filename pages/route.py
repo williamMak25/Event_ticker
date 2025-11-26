@@ -32,3 +32,12 @@ def admin_events_page():
 @pages.route('/admin/events-create',methods=['GET','POST'])
 def admin_events_create_page():
     return render_template('event_create.html',is_admin = True)
+
+@pages.route('/admin/users',methods=['GET'])
+def admin_users_page():
+    return render_template('admin_users.html',is_admin = True , user_id =session.get('user_id'))
+
+@pages.route('/admin/payments',methods=['GET'])
+def admin_payments_page():
+    path = request.args.get('path','')
+    return render_template('admin_payments.html',is_admin = True , path=path)

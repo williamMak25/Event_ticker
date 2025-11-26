@@ -110,6 +110,7 @@ block title %}Login{% endblock %} {% block content %}
   const form = document.getElementById("register_user");
 
   form.addEventListener("submit", async (e) => {
+    e.preventDefault();
     const data = e.target;
 
     const formdata = {
@@ -119,11 +120,11 @@ block title %}Login{% endblock %} {% block content %}
     };
 
     const res = await fetch("/api/users", {
+      method: "POST",
       headers: {
-        method: "POST",
-        contentType: "application/json",
-        body: JSON.stringify(formdata),
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(formdata),
     });
     const message = document.getElementById("message");
 
