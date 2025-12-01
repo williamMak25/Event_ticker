@@ -31,7 +31,7 @@ class Transtions(db.Model):
     wallet_id = db.Column(UUID(as_uuid=True),db.ForeignKey('wallets.id'),nullable=False)
 
     amount = db.Column(db.Float,nullable=False)
-    type = db.Column(db.String(50),nullable=False)  # 'credit' or 'debit'
+    type = db.Column(db.String(50),nullable=False)  # 'withdraw' or 'topup'
     created_at = db.Column(db.DateTime, default=datetime.now)
 
     wallets = db.relationship('Wallet',back_populates='transtions',lazy='select')

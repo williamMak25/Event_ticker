@@ -1,0 +1,56 @@
+{% extends "layout.html" %} {% block content %}
+<div class="p-8 space-y-4">
+  <h1 class="text-xl font-semibold">Invoice</h1>
+  <div id="payment_container" class="bg-white p-4 space-y-4">
+    <div class="flex items-center justify-between">
+      <p class="font-semibold">Event</p>
+      <p class="text-gray-600">New Year Party</p>
+    </div>
+    <div class="flex items-center justify-between">
+      <p class="font-semibold">Price</p>
+      <p class="text-gray-600">300 $</p>
+    </div>
+    <div class="flex items-center justify-between">
+      <p class="font-semibold">Discount</p>
+      <p class="text-gray-600">0 $</p>
+    </div>
+    <div class="flex items-center justify-between">
+      <p class="font-semibold">Tickets</p>
+      <div class="flex items-center space-x-4">
+        <button
+          class="bg-gray-200 h-fit w-fit rounded-full flex items-center justify-center"
+        >
+          <span class="px-3 text-lg">+</span>
+        </button>
+        <span class="">2</span>
+        <button
+          class="bg-gray-200 h-fit w-fit rounded-full flex items-center justify-center"
+        >
+          <span class="px-3 text-lg">-</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <p class="font-semibold">Payment Method</p>
+      <p class="text-gray-600">Jyinn Coin</p>
+    </div>
+
+    <hr />
+    <div class="flex flex-col items-end justify-between space-y-4">
+      <div class="flex items-center justify-end space-x-8">
+        <p class="font-semibold">Sub Total</p>
+        <p class="text-gray-600 min-w-52 text-end">600 $</p>
+      </div>
+      <div class="flex items-center justify-end space-x-8">
+        <p class="font-semibold">VAT</p>
+        <p class="text-gray-600 min-w-52 text-end">0 $</p>
+      </div>
+      <hr class="border-gray-200 w-full" />
+      <div class="flex items-center justify-start space-x-8">
+        <p class="font-semibold">Total</p>
+        <p class="text-gray-600 min-w-52 text-end">600 $</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

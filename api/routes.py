@@ -93,11 +93,11 @@ def create_event():
     db.session.commit()
     return jsonify(event.to_dict())
 
-@api.route('/buy_ticket/<event_id>',methods=['POST'])
-def buy_ticket(event_id):
-    event = Event.query.get(event_id)
+@api.route('/buy_ticket',methods=['POST'])
+def buy_ticket():
+    event = Event.query.get(request.get_json()['event_id'])
     
-    user =User.query.get(request.get_json()['user_id'])
+    user = User.query.get(request.get_json()['user_id'])
     
     if not event:
         return jsonify({"message":"Event not found"}),404
@@ -108,17 +108,36 @@ def buy_ticket(event_id):
     if event.avaiable_tickets <=0 or event.avaiable_tickets < request.get_json()['ticket']:
         return jsonify({"message":"No tickets available"}),400
 
-    if user in event.users:
-        return jsonify({"message":"User has already bought a ticket for this event"}),400
+    if request.get_json()['ticket'] > 6:
+        return jsonify({"message":"Each Transition can only buy 6 ticket."}),400
+    
+    total_price = event.ticket_price * request.get_json()['ticket']
+    wallet = Wallet.query.filter_by(user_id=user.id).first()
+
+    if wallet.balance < total_price:
+        return jsonify({"message":"Insufficient balance"}),400
+    
+    transition = Transtions(
+        wallet_id = wallet.id,
+        amount = total_price,
+        type = "withdraw"
+    )
+
+    db.session.add(transition)
+    db.session.commit()
+
+    wallet.balance -= total_price
 
     event.avaiable_tickets -=1
     event.users.append(user)
+    
 
     ticket = Ticket(
         user_id = user.id,
         event_id = event.id,
         total_token = request.get_json()['ticket']
     )
+
     db.session.add(ticket)
     db.session.commit()
 
@@ -173,4 +192,10 @@ def top_up():
 @api.route('/transactions',methods=['GET'])
 def get_transactions():
     transitions = Transtions.query.all()
+    return jsonify([transition.to_dict() for transition in transitions])
+
+@api.route('/user_transitions',methods=['GET'])
+def user_transitions():
+    wallet = Wallet.query.filter_by(user_id = session.get('user_id')).first()
+    transitions = Transtions.query.filter_by(wallet_id = wallet.id).all()
     return jsonify([transition.to_dict() for transition in transitions])

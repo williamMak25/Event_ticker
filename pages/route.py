@@ -17,7 +17,12 @@ def login():
 
 @pages.route('/events',methods=['GET'])
 def event_page():
-    return render_template('events.html')
+    user_id = session.get('user_id')
+    return render_template('events.html',user_id=user_id)
+
+@pages.route('/payment',methods=['GET'])
+def payment_page():
+    return render_template('payment.html')
 
 
 # admin routes
